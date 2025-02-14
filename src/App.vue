@@ -157,11 +157,12 @@ const validatePhone = () => {
      
 }
 
+
 const changePrice = () => {
   if (checkbox.value) {
-    allPrice.value = 480 + 99
+    allPrice.value = allPrice.value + 99
   } else    {
-    allPrice.value = 480
+    allPrice.value = allPrice.value - 99
   }
 }
 </script>
