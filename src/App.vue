@@ -11,10 +11,10 @@
       <label for="" class="input_label">Обязательное поле</label>
       <span v-if="phoneErrorMessage.length > 0" class="error-message">{{ phoneErrorMessage }}</span>
     </div>
-    <tariffsSlider  @changePriceSlider="changePriceSlider"  title="Минуты" :array="[200, 350, 600, 650]" :min="1"  :max="4" :default="3">
+    <tariffsSlider @changePriceSlider="changePriceSlider" title="Минуты" :items="tariffsSliderMinutes" name="tariffsSliderMinutes" :min="1" :max="tariffsSliderMinutes.length" :def="3">
     </tariffsSlider>
-    <tariffsSlider @changePriceSliderBlackOne="changePriceSliderBlackOne" title="СМС" :array="[0, 50, 100, 150]" :black="true" :min="1" :max="4" :default="2"></tariffsSlider>
-    <tariffsSlider @changePriceSliderBlackTwo="changePriceSliderBlackTwo" title="Интернет" :array="[5, 15, 30, 35]" :black="true" :min="1" :max="4" :default="2"></tariffsSlider>
+    <tariffsSlider  @changePriceSlider="changePriceSlider" title="СМС" :black="true" :items="tariffsSliderSms" :min="1" name="tariffsSliderSms" :max="tariffsSliderSms.length" :def="2"></tariffsSlider>
+    <tariffsSlider  @changePriceSlider="changePriceSlider" title="Интернет" :black="true" :items="tariffsSliderInternet" name="tariffsSliderInternet"  :min="1" :max="tariffsSliderInternet.length" :def="2"></tariffsSlider>
     <h3 class="title-3">
       Wi-Fi роутер
     </h3>
@@ -32,106 +32,33 @@
 </template>
 <script setup>
 import tariffsSlider from './components/tariffsSlider.vue';
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
 
 const phone = ref('')
-const allPrice = ref(480)
 const checkbox = ref(false)
 const phoneErrorMessage = ref(false)
-const def = ref(3)
-const defDrkOne = ref(2)
-const defDrkTwo = ref(2)
-const changePriceSlider = (check) => {
-  if (def.value > check) {
-    if ((def.value  - Number(check)) == 1) {
-      allPrice.value = allPrice.value - 20
-      def.value = check
-    }
-    if ((def.value  - Number(check)) == 2) {
-      allPrice.value = allPrice.value - 40
-      def.value = check
-    }
-    if ((def.value  - Number(check)) == 3) {
-      allPrice.value = allPrice.value - 60
-      def.value = check
-    }
-   
+
+const tariffsSliderMinutes = ref([{names: 200, price: 140}, {names: 350, price: 160}, {names: '600 минут', price: 180}, {names: 650, price: 200}])
+const tariffsSliderSms = ref([{names: 0, price: 80}, {names: 50, price: 100}, {names: 100, price: 120}, {names: 150, price: 140}])
+const tariffsSliderInternet = ref([{names: 5, price: 180}, {names: 15, price: 200}, {names: 30, price: 220}, {names: 35, price: 240}])
+
+const changePrice = !checkbox.value
+
+const firstInputValue = ref({names: '600 минут', price: 180});
+const secondInputValue = ref({names: 50, price: 100});
+const thirdInputValue = ref({names: 15, price: 200});
+
+const allPrice = computed(() => firstInputValue.value.price + secondInputValue.value.price + thirdInputValue.value.price + (checkbox.value ? 99 : 0));
+
+const changePriceSlider = (check ,items, name ) =>  {
+  if (name == 'tariffsSliderMinutes') {
+    firstInputValue.value = items[check - 1]
   }
-  if (def.value < check) {
-    if ((Number(check)  - def.value) == 1) {
-      allPrice.value = allPrice.value + 20
-    def.value = check
-    }
-    if ((Number(check)  - def.value) == 2) {
-      allPrice.value = allPrice.value + 40
-    def.value = check
-    }
-    if ((Number(check)  - def.value) == 3) {
-      allPrice.value = allPrice.value + 60
-      def.value = check
-    }
+  if (name == 'tariffsSliderSms') {
+    secondInputValue.value = items[check - 1]
   }
-}
-const changePriceSliderBlackOne = (check) => {
-  
-  if (defDrkOne.value > check) {
-    if ((defDrkOne.value  - Number(check)) == 1) {
-      allPrice.value = allPrice.value - 20
-      defDrkOne.value = check
-    }
-    if ((defDrkOne.value  - Number(check)) == 2) {
-      allPrice.value = allPrice.value - 40
-      defDrkOne.value = check
-    }
-    if ((defDrkOne.value  - Number(check)) == 3) {
-      allPrice.value = allPrice.value - 60
-      defDrkOne.value = check
-    }
-  }
-  if (defDrkOne.value < check) {
-    if ((Number(check)  - defDrkOne.value) == 1) {
-      allPrice.value = allPrice.value + 20
-      defDrkOne.value = check
-    }
-    if ((Number(check)  - defDrkOne.value) == 2) {
-      allPrice.value = allPrice.value + 40
-      defDrkOne.value = check
-    }
-    if ((Number(check)  - defDrkOne.value) == 3) {
-      allPrice.value = allPrice.value + 60
-      defDrkOne.value = check
-    }
-  }
-}
-const changePriceSliderBlackTwo = (check) => {
-  if (defDrkTwo.value > check) {
-    if ((defDrkTwo.value  - Number(check)) == 1) {
-      allPrice.value = allPrice.value - 20
-      defDrkTwo.value = check
-    }
-    if ((defDrkTwo.value  - Number(check)) == 2) {
-      allPrice.value = allPrice.value - 40
-      defDrkTwo.value = check
-    }
-    if ((defDrkTwo.value  - Number(check)) == 3) {
-      allPrice.value = allPrice.value - 60
-      defDrkTwo.value = check
-    }
-   
-  }
-  if (defDrkTwo.value < check) {
-    if ((Number(check)  - defDrkTwo.value) == 1) {
-      allPrice.value = allPrice.value + 20
-      defDrkTwo.value = check
-    }
-    if ((Number(check)  - defDrkTwo.value) == 2) {
-      allPrice.value = allPrice.value + 40
-      defDrkTwo.value = check
-    }
-    if ((Number(check)  - defDrkTwo.value) == 3) {
-      allPrice.value = allPrice.value + 60
-      defDrkTwo.value = check
-    }
+  if (name == 'tariffsSliderInternet') {
+    thirdInputValue.value = items[check - 1]
   }
 }
 
@@ -146,25 +73,16 @@ const validatePhone = () => {
         phoneErrorMessage.value = '';
         alert(JSON.stringify({
         phone: phone.value,
-        minutes: def.value,
-        sms: defDrkOne.value,
-        internet: defDrkTwo.value,
+        minutes: firstInputValue.value,
+        sms: secondInputValue.value,
+        internet: thirdInputValue.value,
         RentСheckbox: checkbox.value,
         allPrice: allPrice.value
       }))
       }
-
-     
 }
 
 
-const changePrice = () => {
-  if (checkbox.value) {
-    allPrice.value = allPrice.value + 99
-  } else    {
-    allPrice.value = allPrice.value - 99
-  }
-}
 </script>
 <style>
 .input_all {

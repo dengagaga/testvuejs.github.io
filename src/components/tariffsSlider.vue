@@ -2,11 +2,11 @@
     <div class="slider-container">
         <h3 class="title-3">{{title}}</h3>
           <label class="slider">
-            <input @change="$emit('changePriceSlider', sliderValue), $emit('changePriceSliderBlackOne', sliderValue), $emit('changePriceSliderBlackTwo', sliderValue)" type="range" :min="min" :max="max" v-model="sliderValue"  :class="black  ?  'level level-black' :'level'">
+            <input @change="$emit('changePriceSlider', sliderValue, items, name)" type="range" :min="min" :max="max" v-model="sliderValue" :class="black  ?  'level level-black' :'level'">
           </label>
           <div class="slider-slot" >
-              <p v-for="ar in array" :key="ar" class="slider-slot-number">
-                  {{ ar }} {{ ar == 600 ? 'мин.' : '' }}
+              <p v-for="item in items" :key="item" class="slider-slot-number">
+                  {{ item.names }}
               </p>
           
           </div>
@@ -14,16 +14,16 @@
 </template>
 <script setup>
 import { onMounted, ref } from 'vue';
-defineEmits(['changePriceSlider', 'changePriceSliderBlackOne', 'changePriceSliderBlackTwo'])
 const props = defineProps({
-    title: String,
-    array: Array,
-    black: Boolean,
-    min: Number,
-    max: Number,
-    default: Number
+  title: String,
+  items: Array,
+  name: String,
+  black: Boolean,
+  min: Number,
+  max: Number,
+  def: Number,
 });
-const sliderValue = ref(props.default)
+const sliderValue = ref(props.def)
 
 
 
